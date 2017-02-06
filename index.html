@@ -403,8 +403,8 @@
         ctx.stroke();
       };
 
-      //--- Рисование окружностей
-      var drawCircle = function drawCircle () {
+      //--- Рисование снеговика
+      var drawSnowman = function drawSnowman () {
         var circle = function circle (x, y, radius, lineWidth, color, isFill) {
           ctx.lineWidth = lineWidth;
           isFill ? ctx.fillStyle = color: ctx.strokeStyle = color;
@@ -418,21 +418,58 @@
           }
         };
 
+        var position = prompt("Где должен появится снеговик? (например, 50,50)", "100,100");
+        var positionArray = position.split(',');
+        var positionX = parseFloat(positionArray[0], 10);
+        var positionY = parseFloat(positionArray[1], 10);
+
         ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
-        circle(100, 100, 30, 2, 'Black', false);
-        circle(100, 180, 50, 2, 'Black', false);
-        circle(90, 90, 5, 0, 'Black', true);
-        circle(110, 90, 5, 0, 'Black', true);
-        circle(100, 105, 5, 0, 'Orange', true);
-        circle(100, 155, 6, 0, 'Black', true);
-        circle(100, 180, 6, 0, 'Black', true);
-        circle(100, 205, 6, 0, 'Black', true);
+        circle(positionX, positionY, 30, 2, 'Black', false);
+        circle(positionX, positionY + 80, 50, 2, 'Black', false);
+        circle(positionX - 10, positionY - 10, 5, 0, 'Black', true);
+        circle(positionX + 10, positionY - 10, 5, 0, 'Black', true);
+        circle(positionX, positionY + 5, 5, 0, 'Orange', true);
+        circle(positionX, positionY + 55, 6, 0, 'Black', true);
+        circle(positionX, positionY + 80, 6, 0, 'Black', true);
+        circle(positionX, positionY + 105, 6, 0, 'Black', true);
+      };
+
+      //--- Рисование по массиву точек
+      var drawPoints = function drawPoints () {
+        var points = prompt('Введите последовательность точек в виде: X1,Y1:X2,Y2 и т. д.', '');
+        var lineW = prompt('Толщина линии', '2');
+        var color = prompt('Цвет линии', 'Black');
+        var pointsArray, firstPoint;
+
+        if(points !== null) {
+          pointsArray = points.split(':');
+        } else {
+          return;
+        }
+
+        firstPoint = pointsArray[0].split(',');
+
+        ctx.lineWidth = lineW;
+        ctx.strokeStyle = color;
+
+        ctx.clearRect(0, 0, cnvs.width, cnvs.height);
+
+        ctx.beginPath();
+        ctx.moveTo(parseFloat(firstPoint[0], 10),parseFloat(firstPoint[1], 10));
+
+        for(var i = 1; i < pointsArray.length; i++) {
+          var coords = pointsArray[i].split(',');
+          ctx.lineTo(parseFloat(coords[0], 10),parseFloat(coords[1], 10));
+        }
+
+        ctx.stroke();
       };
 
       return {
         drawMan: drawMan,
-        drawCircle: drawCircle
+        drawSnowman: drawSnowman,
+        drawPoints: drawPoints
       };
     };
 
@@ -447,7 +484,8 @@
         'arraysСompareBtn',
         'findInMapBtn',
         'drawManBtn',
-        'drawCircleBtn'
+        'drawSnowmanBtn',
+        'drawPointsBtn'
       ];
 
       var arrayFunctions = [
@@ -459,7 +497,8 @@
         arraysСompare,
         findInMap,
         canvasDraw().drawMan,
-        canvasDraw().drawCircle
+        canvasDraw().drawSnowman,
+        canvasDraw().drawPoints
       ];
 
       if(arrayBtns.length !== arrayFunctions.length) {
@@ -547,9 +586,11 @@
       </tr>
       <tr> 
         <td>
-          <button type="button" id="drawManBtn">Нарисовать человечка</button>
+          <button type="button" id="drawManBtn">Нарисовать человечков</button>
           <br><br>
-          <button type="button" id="drawCircleBtn">Нарисовать окружности</button>
+          <button type="button" id="drawSnowmanBtn">Нарисовать снеговика</button>
+          <br><br>
+          <button type="button" id="drawPointsBtn">Нарисовать по точкам</button>
         </td>
         <td colspan="3"><canvas width="500" height="500" id="canvasDrawContainer"></canvas></td>
       </tr>
