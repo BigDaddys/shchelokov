@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <title>JavaScript для детей</title>
+    <style type="text/css">
+      * { padding: 0; margin: 0; }
+      body { font-family: sans-serif; padding: 40px; }
+      table { border-top: 1px solid #ccc; border-left: 1px solid #ccc; }
+      table td { border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; vertical-align: middle; font-size: 14px; padding: 10px 20px;}
+      table td:first-child { text-align: center; }
+      button { padding: 5px 10px; border: none; background: #9b59b6; color: #fff; cursor: pointer; border: 1px solid transparent; }
+      button:hover { border-color: #9b59b6; color: #9b59b6; background: transparent; }
+      label { font-size: 12px; }
+      label input[type="checkbox"] { display: inline-block; vertical-align: middle; margin-right: 5px; }
+      #resultPassword { text-align: left; }
+    </style>
+  </head>
+
+  <script type="text/javascript">
+
+    // Добавить событие к кнопке
+    var addEventButton = function addEventButton (id, func) {
+      document.getElementById(id).addEventListener('click', func, false);
+    };
+
+    // Шар Судьбы
+    var initBall = function initBall () {
+      var phrases = [
+        "Звучит неплохо",
+        "Да, это определенно надо сделать",
+        "Не думаю, что это хорошая идея",
+        "Может, не сегодня?",
+        "Компьютер говорит нет"
+      ];
+      var question = prompt("Введите вопрос", "");
+      var outputPhareseResult = document.getElementById('resultPhraseBall');
+
+      if(question) {
+        outputPhareseResult.innerHTML = question + "?&nbsp;<b>Ответ:</b>&nbsp;" + phrases[Math.floor(Math.random() * phrases.length)];
+      } else {
+        return;
+      }
+    };
+
+    // Генератор дразнилок
+    var generateInsult = function generateInsult () {
+      var randomBodyParts = ['глаз', 'нос', 'рот', 'череп'];
+      var randomAdjectives = ['вонючий', 'унылый', 'дурацкий'];
+      var randomBodyPartsAnimals = ['лапа', 'хвост', 'пасть', 'морда', 'крыло'];
+      var randomAnimals = ['мухи', 'выдры', 'мартышки', 'крысы'];
+      var outputInsult = document.getElementById('resultInsult');
+      var getRandomWord = function getRandomWord (arrayName) {
+        return arrayName[Math.floor(Math.random() * arrayName.length)];
+      };
+
+      outputInsult.innerHTML = [
+        "У тебя",
+        getRandomWord(randomBodyParts),
+        "ещё более",
+        getRandomWord(randomAdjectives) + ',',
+        "чем",
+        getRandomWord(randomBodyPartsAnimals),
+        "у",
+        getRandomWord(randomAnimals) + "!"
+      ].join(" ");
+    };
+
+    // Генератор пароля
+    var generatePassword = function generatePassword () {
+      var alphabet = "abcdefghijklmnopqrstuvwxyz";
+      var alphabetUpper = alphabet.toUpperCase();
+      var digitals = "0123456789";
+      var symbols = "!@#$%^&*()_+-={}[]:;|?<>/\"'~";
+      var lettersString = alphabet;
+      var genString = "";
+      var len = prompt("Длина пароля", "7");
+      var outputPassword = document.getElementById('resultPassword');
+      var getCheckedStatus = function getCheckedStatus (id) {
+        var status = document.getElementById(id).checked;
+        return status;
+      };
+
+      if(getCheckedStatus('selectAlpabetUpper')) {
+        lettersString += alphabetUpper;
+      }
+
+      if(getCheckedStatus('selectDigitals')) {
+        lettersString += digitals;
+      }
+
+      if(getCheckedStatus('selectSymbols')) {
+        lettersString += symbols;
+      }
+
+      for(var i = 0; i < len; i++) {
+        genString += lettersString[Math.floor(Math.random() * lettersString.length)];
+      }
+
+      outputPassword.innerHTML = genString;
+    };
+
+    // Хакерский язык
+    var hackLang = function hackLang () {
+      var inputString = prompt("Введите текст", "");
+      var outputString = "";
+      var outputHack = document.getElementById('resultHack');
+
+      if(inputString) {
+        for(var i = 0; i < inputString.length; i++) {
+          if(inputString[i] === "A" || inputString[i] === "a") {
+            outputString += "4";
+          } else if(inputString[i] === "E" || inputString[i] === "e") {
+            outputString += "3";
+          } else if(inputString[i] === "I" || inputString[i] === "i") {
+            outputString += "1";
+          } else if(inputString[i] === "O" || inputString[i] === "o") {
+            outputString += "0";
+          } else {
+            outputString += inputString[i];
+          }
+        }
+      } else {
+        return;
+      }
+
+      outputHack.innerHTML = outputString;
+    };
+
+    // Игра Виселица
+    var gameViselica = function gameViselica () {
+      var words = [
+        "одуванчик",
+        "стрекоза",
+        "автомобиль",
+        "лаванда",
+        "крокодил",
+        "катапульта",
+        "машинист",
+        "карась",
+        "мыло",
+        "копилка"
+      ];
+
+      //--- Выбор случайного слова
+      var pickWord = function pickWord (arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      };
+
+      //--- Создание массива со скрытыми буквами
+      var setupAnswerArray = function setupAnswerArray(word) {
+        var createArray = [];
+
+        for(var i = 0; i < word.length; i++) {
+          createArray[i] = "_";
+        }
+
+        return createArray;
+      };
+
+      //--- Обновление результатов игры после ввода буквы игроком
+      var updateGameState = function updateGameState (letter, word, array) {
+        var countLetters = 0;
+
+        for(var j = 0; j < word.length; j++) {
+          if(word[j] === letter && array[j] === '_') {
+            array[j] = letter;
+            countLetters++;
+          }
+        }
+
+        return countLetters;
+      };
+
+      var randomWord = pickWord(words);
+      var answerArray = setupAnswerArray(randomWord);
+      var remainingLetters = randomWord.length;
+      var countSteps = randomWord.length + 5;
+      var outputContainer = document.getElementById('viselicaWord');
+
+      while(remainingLetters > 0 && countSteps !== 0) {
+        alert(answerArray.join(" "));
+
+        var guess = prompt('Угадайте букву (Количество попыток: ' + countSteps + ')', '');
+
+        if(guess === null) {
+          break;
+        } else if(guess.length !== 1) {
+          alert('Введите только одну букву!');
+        } else {
+          guess = guess.toLowerCase();
+          remainingLetters -= updateGameState(guess, randomWord, answerArray);
+          countSteps--;
+        }
+      }
+
+      outputContainer.innerHTML = 'Угадано: <b>' + answerArray.join(" ") + '</b>';
+    };
+
+    // Сравнение массивов
+    var arraysСompare = function arraysСompare () {
+      var arrayOne = prompt('Введите первую последовательность через запятую', '');
+      var arrayTwo = prompt('Введите вторую последовательность через запятую', '');
+      var outputArraysСompareResult = document.getElementById('arraysСompareResult');
+
+      if(arrayOne === null || arrayTwo === null) {
+        return;
+      }
+
+      arrayOne = arrayOne.split(',');
+      arrayTwo = arrayTwo.split(',');
+
+      if(arrayOne.length !== arrayTwo.length) {
+        outputArraysСompareResult.innerHTML = "Разная длина массивов";
+        return;
+      }
+
+      for(var i = 0; i < arrayOne.length; i++) {
+        if(arrayOne[i] !== arrayTwo[i]) {
+          outputArraysСompareResult.innerHTML = "Массивы не равны";
+          return;
+        }
+      }
+
+      outputArraysСompareResult.innerHTML = "Массивы равны";
+    };
+
+    // Игра Найди клад!
+    var findInMap = function findInMap () {
+      var outputfindInMapResult = document.getElementById('findInMapResult');
+      var widthImg = parseInt(document.getElementById('findInMapImg').getAttribute('width'), 10);
+      var heightImg = parseInt(document.getElementById('findInMapImg').getAttribute('height'), 10);
+      var clicks = 20;
+      var target = {
+        x: getRandomNumber(widthImg),
+        y: getRandomNumber(heightImg)
+      }
+
+      outputfindInMapResult.innerHTML = "<b>Кликни на карте</b>";
+
+      document.getElementById('findInMapImg').addEventListener('click', function (e) {
+        if (clicks > 0) {
+          var distance = getDistance(e, target);
+          if(distance < 8) {
+            outputfindInMapResult.innerHTML = "<b>Клад найден</b>. Сделано кликов: " + clicks;
+            return;
+          } else {
+            outputfindInMapResult.innerHTML = getDistanceHint(distance) + " Осталось кликов: " + clicks;
+          }
+        } else {
+          outputfindInMapResult.innerHTML = "<b>Конец игры. Превышено количество кликов</b>";
+          return;
+        }
+        clicks--;
+      }, false);
+
+      //--- Получение случайного числа
+      function getRandomNumber (size) {
+        return Math.floor(Math.random() * size);
+      };
+
+      //--- Вычисление расстояния от клика до точки (клада)
+      function getDistance (e, target) {
+        var diffX = e.offsetX - target.x;
+        var diffY = e.offsetY - target.y;
+        return Math.floor(Math.sqrt((diffX * diffX) + (diffY * diffY)));
+      }
+
+      //--- Сообщение о близости к цели
+      function getDistanceHint (distance) {
+        if (distance < 10) {
+          return "Обожжешься!";
+        } else if (distance < 20) {
+          return "Очень горячо.";
+        } else if (distance < 40) {
+          return "Горячо.";
+        } else if (distance < 80) {
+          return "Тепло.";
+        } else if (distance < 160) {
+          return "Холодно.";
+        } else if (distance < 320) {
+          return "Очень холодно.";
+        } else if (distance < 400) {
+          return "Очень-очень холодно.";
+        } else {
+          return "Замерзнешь!";
+        }
+      }
+    };
+
+    // Игра "Гонка на автомобилях"
+    var carRacing = function carRacing () {
+      var road = document.getElementById('carRacingRoad');
+
+      road.style.position = "relative";
+      road.style.overflow = "hidden";
+      road.style.width = "500px";
+      road.style.height = "500px";
+
+      //--- Конструктор Car
+      var Car = function (x,y,speed) {
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.draw();
+      };
+
+      //--- Добавление изображения авто в произвольное место
+      Car.prototype.draw = function () {
+        this.carElement = document.createElement('img');
+        this.carElement.src = "http://nostarch.com/images/car.png";
+        this.carElement.alt = "";
+        this.carElement.width = "70";
+        this.carElement.style.position = "absolute";
+        this.carElement.style["left"] = this.x + 'px';
+        this.carElement.style["top"] = this.y + 'px';
+
+        road.appendChild(this.carElement);
+      };
+
+      Car.prototype.moveRight = function (step) {
+        this.x += step ? step : this.speed;
+        this.carElement.style["left"] = this.x + 'px';
+      };
+
+      Car.prototype.moveLeft = function (step) {
+        this.x -= step ? step : this.speed;
+        this.carElement.style["left"] = this.x + 'px';
+      };
+
+      Car.prototype.moveUp = function (step) {
+        this.y -= step ? step : this.speed;
+        this.carElement.style["top"] = this.y + 'px';
+      };
+
+      Car.prototype.moveDown = function (step) {
+        this.y += step ? step : this.speed;
+        this.carElement.style["top"] = this.y + 'px';
+      };
+
+      var addedCar = new Car(0, 200, 50);
+      var addedCar2 = new Car(0, 300, 10);
+
+      document.getElementById('carRacingBtnUp').addEventListener('click', function () {
+        addedCar.moveUp(Math.ceil(Math.random() * addedCar.speed));
+      }, false);
+
+      document.getElementById('carRacingBtnDown').addEventListener('click', function () {
+        addedCar.moveDown(Math.ceil(Math.random() * addedCar.speed));
+      }, false);
+
+      document.getElementById('carRacingBtnLeft').addEventListener('click', function () {
+        addedCar.moveLeft(Math.ceil(Math.random() * addedCar.speed));
+      }, false);
+
+      document.getElementById('carRacingBtnRight').addEventListener('click', function () {
+        addedCar.moveRight(Math.ceil(Math.random() * addedCar.speed));
+      }, false);
+
+      document.getElementById('carRacingBtnRun').addEventListener('click', function () {
+        setInterval(function () {
+          addedCar.moveRight(Math.ceil(Math.random() * 5));
+          addedCar2.moveRight(Math.ceil(Math.random() * 5));
+        }, 30);
+      }, false);
+    };
+
+    // Рисование на Canvas
+    var canvasDraw = function canvasDraw () {
+      var cnvs = document.getElementById('canvasDrawContainer');
+      var ctx = cnvs.getContext('2d');
+
+      //--- Рисование человечка
+      var drawMan = function drawMan () {
+        ctx.clearRect(0, 0, cnvs.width, cnvs.height);
+
+        ctx.fillRect(100,100,50,50);
+        ctx.fillStyle = "Yellow";
+        ctx.fillRect(120,150,10,20);
+        ctx.fillStyle = "Blue";
+        ctx.fillRect(60,170,130,10);
+        ctx.fillStyle = "Green";
+        ctx.fillRect(90,180,70,60);
+        ctx.fillStyle = "Gray";
+        ctx.fillRect(90,240,10,50);
+        ctx.fillStyle = "Gold";
+        ctx.fillRect(150,240,10,50);
+
+        ctx.strokeStyle = "Red";
+        ctx.lineWidth = "2";
+        ctx.strokeRect(300,300,30,30);
+        ctx.beginPath();
+        ctx.moveTo(315,331);
+        ctx.lineTo(315,391);
+        ctx.moveTo(315,351);
+        ctx.lineTo(290,341);
+        ctx.moveTo(315,351);
+        ctx.lineTo(340,341);
+        ctx.moveTo(315,391);
+        ctx.lineTo(290,421);
+        ctx.moveTo(315,391);
+        ctx.lineTo(340,421);
+        ctx.stroke();
+      };
+
+      //--- Рисование окружностей
+      var drawCircle = function drawCircle () {
+        var circle = function circle (x, y, radius, lineWidth, color, isFill) {
+          ctx.lineWidth = lineWidth;
+          isFill ? ctx.fillStyle = color: ctx.strokeStyle = color;
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+
+          if(isFill) {
+            ctx.fill();
+          } else {
+            ctx.stroke();
+          }
+        };
+
+        ctx.clearRect(0, 0, cnvs.width, cnvs.height);
+
+        circle(100, 100, 30, 2, 'Black', false);
+        circle(100, 180, 50, 2, 'Black', false);
+        circle(90, 90, 5, 0, 'Black', true);
+        circle(110, 90, 5, 0, 'Black', true);
+        circle(100, 105, 5, 0, 'Orange', true);
+        circle(100, 155, 6, 0, 'Black', true);
+        circle(100, 180, 6, 0, 'Black', true);
+        circle(100, 205, 6, 0, 'Black', true);
+      };
+
+      return {
+        drawMan: drawMan,
+        drawCircle: drawCircle
+      };
+    };
+
+    // Инициализация кода после загрузки контента
+    window.addEventListener('DOMContentLoaded', function () {
+      var arrayBtns = [
+        'ball',
+        'generatedInsult',
+        'generatedPassword',
+        'toHackLang',
+        'startGameViselica',
+        'arraysСompareBtn',
+        'findInMapBtn',
+        'drawManBtn',
+        'drawCircleBtn'
+      ];
+
+      var arrayFunctions = [
+        initBall,
+        generateInsult,
+        generatePassword,
+        hackLang,
+        gameViselica,
+        arraysСompare,
+        findInMap,
+        canvasDraw().drawMan,
+        canvasDraw().drawCircle
+      ];
+
+      if(arrayBtns.length !== arrayFunctions.length) {
+        alert('Неверное соотношение количества кнопок и функций');
+        return;
+      }
+
+      for(var k = 0; k < arrayBtns.length; k++) {
+        addEventButton(arrayBtns[k], arrayFunctions[k]);
+      }
+
+      carRacing();
+    }, false);
+
+  </script>
+  <body>
+
+    <table border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td><button type="button" id="ball">Шар Судьбы</button></td>
+        <td colspan="3"><div id="resultPhraseBall"></div></td>
+      </tr>
+      <tr>
+        <td><button type="button" id="generatedInsult">Генератор дразнилок</button></td>
+        <td colspan="3"><div id="resultInsult"></div></td>
+      </tr>
+      <tr>
+        <td rowspan="2"><button type="button" id="generatedPassword">Генератор пароля</button></td>
+        <td>
+          <label for="selectAlpabetUpper">
+            <input id="selectAlpabetUpper" type="checkbox" name="selectAlpabetUpper">
+            Добавить заглавные буквы
+          </label>
+        </td>
+        <td>
+          <label for="selectDigitals">
+            <input id="selectDigitals" type="checkbox" name="selectDigitals">
+            Добавить цифры
+          </label>
+        </td>
+        <td>
+          <label for="selectSymbols">
+            <input id="selectSymbols" type="checkbox" name="selectSymbols">
+            Добавить символы
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3"><div id="resultPassword">&nbsp;</div></td>
+      </tr>
+      <tr>
+        <td><button type="button" id="toHackLang">Хакерский язык</button></td>
+        <td colspan="3"><div id="resultHack"></div></td>
+      </tr>
+      <tr>
+        <td><button type="button" id="startGameViselica">Игра Виселица</button></td>
+        <td colspan="3"><div id="viselicaWord"></div></td>
+      </tr>
+      <tr>
+        <td><button type="button" id="arraysСompareBtn">Сравнение массивов</button></td>
+        <td colspan="3"><div id="arraysСompareResult"></div></td>
+      </tr>
+      <tr>
+        <td rowspan="2"><button type="button" id="findInMapBtn">Найти клад!</button></td>
+        <td colspan="3">
+          <img width="500" height="500" id="findInMapImg" src="http://nostarch.com/images/treasuremap.png">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3"><div id="findInMapResult">&nbsp;</div></td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" id="carRacingBtnUp">Ехать вверх</button>
+          <br><br>
+          <button type="button" id="carRacingBtnDown">Ехать вниз</button>
+          <br><br>
+          <button type="button" id="carRacingBtnLeft">Ехать влево</button>
+          <br><br>
+          <button type="button" id="carRacingBtnRight">Ехать вправо</button>
+          <br><br>
+          <button type="button" id="carRacingBtnRun">Гонка!</button>
+        </td>
+        <td colspan="3"><div id="carRacingRoad"></div></td>
+      </tr>
+      <tr> 
+        <td>
+          <button type="button" id="drawManBtn">Нарисовать человечка</button>
+          <br><br>
+          <button type="button" id="drawCircleBtn">Нарисовать окружности</button>
+        </td>
+        <td colspan="3"><canvas width="500" height="500" id="canvasDrawContainer"></canvas></td>
+      </tr>
+    </table>
+
+  </body>
+</html>
