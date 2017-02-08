@@ -20,12 +20,12 @@
   <script>
 
     // Добавить событие к кнопке
-    let addEventButton = function addEventButton(id, func) {
+    let addEventButton = function (id, func) {
       document.getElementById(id).addEventListener('click', func, false);
     };
 
     // Шар Судьбы
-    let initBall = function initBall() {
+    let initBall = function () {
       const PHRASES = [
         "Звучит неплохо",
         "Да, это определенно надо сделать",
@@ -45,7 +45,7 @@
     };
 
     // Генератор дразнилок
-    let generateInsult = function generateInsult() {
+    let generateInsult = function () {
       const RANDOM_BODY_PARTS = ['глаз', 'нос', 'рот', 'череп'];
       const RANDOM_ADJECTIVES = ['вонючий', 'унылый', 'дурацкий'];
       const RANDOM_BODY_PARTS_ANIMALS = ['лапа', 'хвост', 'пасть', 'морда', 'крыло'];
@@ -53,7 +53,7 @@
 
       let outputInsult = document.getElementById('resultInsult');
 
-      let getRandomWord = function getRandomWord(arrayName) {
+      let getRandomWord = function (arrayName) {
         return arrayName[Math.floor(Math.random() * arrayName.length)];
       };
 
@@ -70,7 +70,7 @@
     };
 
     // Генератор пароля
-    let generatePassword = function generatePassword() {
+    let generatePassword = function () {
       const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
       const DIGITALS = "0123456789";
       const SYMBOLS = "!@#$%^&*()_+-={}[]:;|?<>/\"'~";
@@ -81,7 +81,7 @@
       let len = prompt("Длина пароля", "7");
       let outputPassword = document.getElementById('resultPassword');
 
-      let getCheckedStatus = function getCheckedStatus(id) {
+      let getCheckedStatus = function (id) {
         let status = document.getElementById(id).checked;
         return status;
       };
@@ -106,7 +106,7 @@
     };
 
     // Хакерский язык
-    let hackLang = function hackLang() {
+    let hackLang = function () {
       let inputString = prompt("Введите текст", "");
       let outputString = "";
       let outputHack = document.getElementById('resultHack');
@@ -133,7 +133,7 @@
     };
 
     // Игра Виселица
-    let gameViselica = function gameViselica() {
+    let gameViselica = function () {
       const WORDS = [
         "ателье",
         "стрела",
@@ -153,12 +153,12 @@
       let ctx = cnvs.getContext('2d');
 
       //--- Выбор случайного слова
-      let pickWord = function pickWord(array) {
+      let pickWord = function (array) {
         return array[Math.floor(Math.random() * array.length)];
       };
 
       //--- Создание массива со скрытыми буквами
-      let setupAnswerArray = function setupAnswerArray(word) {
+      let setupAnswerArray = function (word) {
         let createArray = [];
 
         for (let i = 0; i < word.length; i++) {
@@ -169,7 +169,7 @@
       };
 
       //--- Обновление результатов игры после ввода буквы игроком
-      let updateGameState = function updateGameState(letter, word, array) {
+      let updateGameState = function (letter, word, array) {
         let countLetters = 0;
 
         for (let j = 0; j < word.length; j++) {
@@ -183,7 +183,7 @@
       };
 
       //--- Рисование человечка
-      let drawSegment = function drawSegment(incorrectGuesses) {
+      let drawSegment = function (incorrectGuesses) {
         ctx.lineWidth = 2;
 
         if (incorrectGuesses === 0) {
@@ -252,7 +252,7 @@
     };
 
     // Сравнение массивов
-    let arraysСompare = function arraysСompare() {
+    let arraysСompare = function () {
       let arrayOne = prompt('Введите первую последовательность через запятую', '');
       let arrayTwo = prompt('Введите вторую последовательность через запятую', '');
       let outputArraysСompareResult = document.getElementById('arraysСompareResult');
@@ -280,7 +280,7 @@
     };
 
     // Игра Найди клад!
-    let findInMap = function findInMap() {
+    let findInMap = function () {
       let outputfindInMapResult = document.getElementById('findInMapResult');
       let widthImg = parseInt(document.getElementById('findInMapImg').getAttribute('width'), 10);
       let heightImg = parseInt(document.getElementById('findInMapImg').getAttribute('height'), 10);
@@ -345,7 +345,7 @@
     };
 
     // Игра "Гонка на автомобилях"
-    let carRacing = function carRacing() {
+    let carRacing = function () {
       let road = document.getElementById('carRacingRoad');
 
       road.style.position = "relative";
@@ -376,22 +376,23 @@
 
       Car.prototype.moveRight = function (step) {
         this.x += step ? step : this.speed;
-        this.carElement.style["left"] = this.x + 'px';
+        this.carElement.style["left"] = (this.x > 500 ? this.x = 0 : this.x) + 'px';
+        console.log(this.x);
       };
 
       Car.prototype.moveLeft = function (step) {
         this.x -= step ? step : this.speed;
-        this.carElement.style["left"] = this.x + 'px';
+        this.carElement.style["left"] = (this.x < 0 ? this.x = 0 : this.x) + 'px';
       };
 
       Car.prototype.moveUp = function (step) {
         this.y -= step ? step : this.speed;
-        this.carElement.style["top"] = this.y + 'px';
+        this.carElement.style["top"] = (this.y < 0 ? this.y = 0 : this.y) + 'px';
       };
 
       Car.prototype.moveDown = function (step) {
         this.y += step ? step : this.speed;
-        this.carElement.style["top"] = this.y + 'px';
+        this.carElement.style["top"] = (this.y > 500 ? this.y = 0 : this.y) + 'px';
       };
 
       let addedCar = new Car(0, 200, 50);
@@ -422,12 +423,12 @@
     };
 
     // Рисование на Canvas
-    let canvasDraw = function canvasDraw() {
+    let canvasDraw = function () {
       let cnvs = document.getElementById('canvasDrawContainer');
       let ctx = cnvs.getContext('2d');
 
       //--- Рисование человечка
-      let drawMan = function drawMan() {
+      let drawMan = function () {
         ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
         ctx.fillRect(100,100,50,50);
@@ -460,7 +461,7 @@
       };
 
       //--- Рисование снеговика
-      let drawSnowman = function drawSnowman() {
+      let drawSnowman = function () {
         let circle = function circle(x, y, radius, lineWidth, color, isFill) {
           ctx.lineWidth = lineWidth;
           isFill ? ctx.fillStyle = color: ctx.strokeStyle = color;
@@ -488,7 +489,7 @@
       };
 
       //--- Рисование по массиву точек
-      let drawPoints = function drawPoints() {
+      let drawPoints = function () {
         let points = prompt('Введите последовательность точек в виде: X1,Y1:X2,Y2 и т. д.', '50,50:200,200:50,200:50,50');
 
         if (points.length === 0) {
@@ -517,7 +518,7 @@
       };
 
       //--- Рисование кругов при клике
-      let drawCircleClick = function drawCircleClick() {
+      let drawCircleClick = function () {
         ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
         cnvs.addEventListener('click', function (e) {
@@ -536,6 +537,154 @@
       };
     };
 
+    // Анимация
+    let animationCanvasDraw = function () {
+      let canvas = document.getElementById('animationCanvasDraw');
+      let ctx = canvas.getContext('2d');
+
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      let coordX = 200;
+      let coordY = 200;
+
+      //--- Анимация движения пчелы
+      let animationBee = function () {
+        // Рисование кругов
+        let circleDraw = function (x, y, radius, isFill) {
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+          isFill ? ctx.fill() : ctx.stroke();
+        };
+
+        // Рисование пчелы
+        let drawBee = function (x ,y) {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "Black";
+          ctx.fillStyle = "Gold";
+
+          circleDraw(x, y, 8, true);
+          circleDraw(x, y, 8, false);
+          circleDraw(x - 5, y - 11, 5, false);
+          circleDraw(x + 5, y - 11, 5, false);
+          circleDraw(x - 2, y - 1, 2, false);
+          circleDraw(x + 2, y - 1, 2, false);
+        };
+
+        // Обновление позиции пчелы
+        let updatePosition = function (coord) {
+          let offset = Math.random() * 6 - 3;
+
+          coord += offset;
+
+          coord > canvasWidth ? coord = canvasWidth : coord;
+          coord < 0 ? coord = 0 : coord;
+
+          return coord;
+        };
+
+        let drawBeeInterval = setInterval(function () {
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+          drawBee(coordX, coordY);
+
+          coordX = updatePosition(coordX);
+          coordY = updatePosition(coordY);
+
+          ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
+        }, 30);
+
+        setTimeout(function () {
+          clearInterval(drawBeeInterval);
+        }, 6000);
+      };
+
+      //--- Анимация прыгающего мяча
+      let animationJumpBall = function () {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        //--- Рисование круга
+        let drawCircle = function (x, y, radius, color, isFill) {
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+          isFill ? ctx.fillStyle = color : ctx.strokeStyle = color;
+          isFill ? ctx.fill() : ctx.stroke();
+        };
+
+        //--- Выбор произвольного цвета
+        let pickRandomColor = function (listColors) {
+          return listColors[Math.floor(Math.random() * listColors.length)];
+        };
+
+        let moreBalls = [];
+
+        const ballColors = ["Red", "Green", "Blue", "Orange", "Yellow", "Purple"];
+        const ballCount = 10;
+
+        const Ball = function () {
+          this.radius = 50;
+          this.x = Math.floor(Math.random() * canvasWidth);
+          this.y = Math.floor(Math.random() * canvasHeight);
+          this.xSpeed = Math.ceil(Math.random() * 2) - 3;
+          this.ySpeed = Math.ceil(Math.random() * 2) - 3;
+          this.color = pickRandomColor(ballColors);
+
+          this.x < this.radius ? this.x += this.radius : this.x;
+          this.y < this.radius ? this.y += this.radius : this.y;
+
+          this.x > (canvasWidth - (this.radius * 2)) ? this.x -= (this.radius * 2) : this.x;
+          this.y > (canvasHeight - (this.radius * 2)) ? this.y -= (this.radius * 2) : this.y;
+        };
+
+        for (let i = 0; i < ballCount; i++) {
+          moreBalls[i] = new Ball();
+        }
+
+        //--- Рисование мяча
+        Ball.prototype.draw = function () {
+          drawCircle(this.x, this.y, this.radius, this.color, true);
+        };
+
+        //--- Движение мяча
+        Ball.prototype.move = function () {
+          this.x += this.xSpeed;
+          this.y += this.ySpeed;
+        };
+
+        //--- Проверка столкновения мяча с границей холста
+        Ball.prototype.checkCollision = function () {
+          if (this.x < this.radius || this.x > (canvasWidth - this.radius)) {
+            this.xSpeed = -this.xSpeed;
+          }
+
+          if (this.y < this.radius || this.y > (canvasHeight - this.radius)) {
+            this.ySpeed = -this.ySpeed;
+          }
+        };
+
+        let jumpBallInterval = setInterval(function () {
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+          for (let j = 0; j < moreBalls.length; j++) {
+            moreBalls[j].draw();
+            moreBalls[j].move();
+            moreBalls[j].checkCollision();
+          }
+
+          ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
+        }, 10);
+
+        /*setTimeout(function () {
+          clearInterval(jumpBallInterval);
+        }, 10000);*/
+      };
+
+      return {
+        animationBee: animationBee,
+        animationJumpBall: animationJumpBall
+      };
+    };
+
     // Инициализация кода после загрузки контента
     window.addEventListener('DOMContentLoaded', function () {
       const ARRAY_BTNS = [
@@ -549,7 +698,9 @@
         'drawManBtn',
         'drawSnowmanBtn',
         'drawPointsBtn',
-        'drawCircleClickBtn'
+        'drawCircleClickBtn',
+        'animationBeeBtn',
+        'animationJumpBallBtn'
       ];
 
       const ARRAY_FUNCTIONS = [
@@ -563,7 +714,9 @@
         canvasDraw().drawMan,
         canvasDraw().drawSnowman,
         canvasDraw().drawPoints,
-        canvasDraw().drawCircleClick
+        canvasDraw().drawCircleClick,
+        animationCanvasDraw().animationBee,
+        animationCanvasDraw().animationJumpBall
       ];
 
       if (ARRAY_BTNS.length !== ARRAY_FUNCTIONS.length) {
@@ -583,15 +736,25 @@
 
     <table border="0" cellpadding="0" cellspacing="0">
       <tr>
-        <td><button type="button" id="ball">Шар Судьбы</button></td>
-        <td colspan="3"><div id="resultPhraseBall"></div></td>
+        <td>
+          <button type="button" id="ball">Шар Судьбы</button>
+        </td>
+        <td colspan="3">
+          <div id="resultPhraseBall"></div>
+        </td>
       </tr>
       <tr>
-        <td><button type="button" id="generatedInsult">Генератор дразнилок</button></td>
-        <td colspan="3"><div id="resultInsult"></div></td>
+        <td>
+          <button type="button" id="generatedInsult">Генератор дразнилок</button>
+        </td>
+        <td colspan="3">
+          <div id="resultInsult"></div>
+        </td>
       </tr>
       <tr>
-        <td rowspan="2"><button type="button" id="generatedPassword">Генератор пароля</button></td>
+        <td rowspan="2">
+          <button type="button" id="generatedPassword">Генератор пароля</button>
+        </td>
         <td>
           <label for="selectAlpabetUpper">
             <input id="selectAlpabetUpper" type="checkbox" name="selectAlpabetUpper">
@@ -612,31 +775,51 @@
         </td>
       </tr>
       <tr>
-        <td colspan="3"><div id="resultPassword">&nbsp;</div></td>
+        <td colspan="3">
+          <div id="resultPassword">&nbsp;</div>
+        </td>
       </tr>
       <tr>
-        <td><button type="button" id="toHackLang">Хакерский язык</button></td>
-        <td colspan="3"><div id="resultHack"></div></td>
+        <td>
+          <button type="button" id="toHackLang">Хакерский язык</button>
+        </td>
+        <td colspan="3">
+          <div id="resultHack"></div>
+        </td>
       </tr>
       <tr>
-        <td rowspan="2"><button type="button" id="startGameViselica">Игра Виселица</button></td>
-        <td colspan="3"><canvas width="500" height="300" id="viselicaCanvas"></td>
+        <td rowspan="2">
+          <button type="button" id="startGameViselica">Игра Виселица</button>
+        </td>
+        <td colspan="3">
+          <canvas width="500" height="300" id="viselicaCanvas">
+        </td>
       </tr>
       <tr>
-        <td colspan="3"><div id="viselicaWord">&nbsp;</div></td>
+        <td colspan="3">
+          <div id="viselicaWord">&nbsp;</div>
+        </td>
       </tr>
       <tr>
-        <td><button type="button" id="arraysСompareBtn">Сравнение массивов</button></td>
-        <td colspan="3"><div id="arraysСompareResult"></div></td>
+        <td>
+          <button type="button" id="arraysСompareBtn">Сравнение массивов</button>
+        </td>
+        <td colspan="3">
+          <div id="arraysСompareResult"></div>
+        </td>
       </tr>
       <tr>
-        <td rowspan="2"><button type="button" id="findInMapBtn">Найти клад!</button></td>
+        <td rowspan="2">
+          <button type="button" id="findInMapBtn">Найти клад!</button>
+        </td>
         <td colspan="3">
           <img width="500" height="500" id="findInMapImg" src="http://nostarch.com/images/treasuremap.png">
         </td>
       </tr>
       <tr>
-        <td colspan="3"><div id="findInMapResult">&nbsp;</div></td>
+        <td colspan="3">
+          <div id="findInMapResult">&nbsp;</div>
+        </td>
       </tr>
       <tr>
         <td>
@@ -650,7 +833,9 @@
           <br><br>
           <button type="button" id="carRacingBtnRun">Гонка!</button>
         </td>
-        <td colspan="3"><div id="carRacingRoad"></div></td>
+        <td colspan="3">
+          <div id="carRacingRoad"></div>
+        </td>
       </tr>
       <tr> 
         <td>
@@ -662,7 +847,19 @@
           <br><br>
           <button type="button" id="drawCircleClickBtn">Рисовать круги при клике мышью</button>
         </td>
-        <td colspan="3"><canvas width="500" height="500" id="canvasDrawContainer"></canvas></td>
+        <td colspan="3">
+          <canvas width="500" height="500" id="canvasDrawContainer"></canvas>
+        </td>
+      </tr>
+      <tr> 
+        <td>
+          <button type="button" id="animationBeeBtn">Анимация движения пчелы</button>
+          <br><br>
+          <button type="button" id="animationJumpBallBtn">Анимация прыгающего мяча</button>
+        </td>
+        <td colspan="3">
+          <canvas width="500" height="500" id="animationCanvasDraw"></canvas>
+        </td>
       </tr>
     </table>
 
