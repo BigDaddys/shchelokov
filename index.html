@@ -685,6 +685,120 @@
       };
     };
 
+    // Управление анимацией с клавиатуры
+    let controlAnimation = function () {
+      let canvas = document.getElementById('controlAnimationCanvas');
+      let ctx = canvas.getContext('2d');
+
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      const KEY_NAMES = {
+        32: "space",
+        37: "left",
+        38: "up",
+        39: "right",
+        40: "down"
+      };
+
+      //--- Рисование круга
+      let drawCircle = function (x, y, radius, color, isFill) {
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+        isFill ? ctx.fillStyle = color : ctx.strokeStyle = color;
+        isFill ? ctx.fill() : ctx.stroke();
+      };
+
+      //--- Конструктор мяча
+      let Ball = function () {
+        this.x = canvasWidth / 2;
+        this.y = canvasHeight / 2;
+        this.xSpeed = 5;
+        this.ySpeed = 0;
+        this.radius = 30;
+        this.color = "rgb(" + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ")";
+      };
+
+      //--- Движение мяча
+      Ball.prototype.move = function () {
+        this.x += this.xSpeed;
+        this.y += this.ySpeed;
+
+        /*this.x < 0 ? this.x = canvasWidth : this.x;
+        this.x > canvasWidth ? this.x = 0 : this.x;
+
+        this.y < 0 ? this.y = canvasHeight : this.y;
+        this.y > canvasHeight ? this.y = 0 : this.y;*/
+        this.checkCollision();
+      };
+
+      //--- Рисование мяча
+      Ball.prototype.draw = function () {
+        drawCircle(this.x, this.y, this.radius, this.color, true);
+      };
+
+      //--- Направления движения мяча
+      Ball.prototype.setDirection = function (direction) {
+        switch (direction) {
+          case 'up': {
+            this.xSpeed = 0;
+            this.ySpeed = -5;
+            break;
+          }
+          case 'down': {
+            this.xSpeed = 0;
+            this.ySpeed = 5;
+            break;
+          }
+          case 'left': {
+            this.xSpeed = -5;
+            this.ySpeed = 0;
+            break;
+          }
+          case 'right': {
+            this.xSpeed = 5;
+            this.ySpeed = 0;
+            break;
+          }
+          case 'stop': {
+            this.xSpeed = 0;
+            this.ySpeed = 0;
+            break;
+          }
+          default: {
+            this.xSpeed = 0;
+            this.ySpeed = 0;
+          }
+        }
+      };
+
+      //--- Проверка столкновения мяча с границей холста
+      Ball.prototype.checkCollision = function () {
+        if (this.x < this.radius || this.x > (canvasWidth - this.radius)) {
+          this.xSpeed = -this.xSpeed;
+        }
+
+        if (this.y < this.radius || this.y > (canvasHeight - this.radius)) {
+          this.ySpeed = -this.ySpeed;
+        }
+      };
+
+      let ball = new Ball();
+
+      document.body.addEventListener('keydown', function (e) {
+        e.preventDefault();
+        let direction = KEY_NAMES[e.keyCode];
+        ball.setDirection(direction);
+      }, false)
+
+      setInterval(function () {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ball.draw();
+        ball.move();
+        ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
+      }, 30);
+    };
+
     // Инициализация кода после загрузки контента
     window.addEventListener('DOMContentLoaded', function () {
       const ARRAY_BTNS = [
@@ -700,7 +814,8 @@
         'drawPointsBtn',
         'drawCircleClickBtn',
         'animationBeeBtn',
-        'animationJumpBallBtn'
+        'animationJumpBallBtn',
+        'controlAnimationBtn'
       ];
 
       const ARRAY_FUNCTIONS = [
@@ -716,7 +831,8 @@
         canvasDraw().drawPoints,
         canvasDraw().drawCircleClick,
         animationCanvasDraw().animationBee,
-        animationCanvasDraw().animationJumpBall
+        animationCanvasDraw().animationJumpBall,
+        controlAnimation
       ];
 
       if (ARRAY_BTNS.length !== ARRAY_FUNCTIONS.length) {
@@ -859,6 +975,14 @@
         </td>
         <td colspan="3">
           <canvas width="500" height="500" id="animationCanvasDraw"></canvas>
+        </td>
+      </tr>
+      <tr> 
+        <td>
+          <button type="button" id="controlAnimationBtn">Управление движением мяча</button>
+        </td>
+        <td colspan="3">
+          <canvas width="500" height="300" id="controlAnimationCanvas"></canvas>
         </td>
       </tr>
     </table>
