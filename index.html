@@ -472,7 +472,7 @@
 
         let position = prompt("Где должен появится снеговик? (например, 50,50)", "100,100");
         let [positionX, positionY] = position.split(',');
-        
+
         positionX = parseFloat(positionX, 10);
         positionY = parseFloat(positionY, 10);
 
@@ -693,12 +693,28 @@
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
 
-      const KEY_NAMES = {
+      const KEY_ACTIONS = {
         32: "space",
         37: "left",
         38: "up",
         39: "right",
-        40: "down"
+        40: "down",
+        88: "faster",
+        90: "slower",
+        67: "smaller",
+        86: "larger"
+      };
+
+      const KEY_NUMBERS = {
+        49: 1,
+        50: 2,
+        51: 3,
+        52: 4,
+        53: 5,
+        54: 6,
+        55: 7,
+        56: 8,
+        57: 9
       };
 
       //--- Рисование круга
@@ -713,23 +729,26 @@
       let Ball = function () {
         this.x = canvasWidth / 2;
         this.y = canvasHeight / 2;
-        this.xSpeed = 5;
+        this.speed = 5;
+        this.xSpeed = 1;
         this.ySpeed = 0;
         this.radius = 30;
         this.color = "rgb(" + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ", " + Math.floor(Math.random() * 256) + ")";
       };
 
       //--- Движение мяча
-      Ball.prototype.move = function () {
-        this.x += this.xSpeed;
-        this.y += this.ySpeed;
+      Ball.prototype.move = function (isCollision) {
+        this.x += this.xSpeed * this.speed;
+        this.y += this.ySpeed * this.speed;
 
-        /*this.x < 0 ? this.x = canvasWidth : this.x;
-        this.x > canvasWidth ? this.x = 0 : this.x;
-
-        this.y < 0 ? this.y = canvasHeight : this.y;
-        this.y > canvasHeight ? this.y = 0 : this.y;*/
-        this.checkCollision();
+        if (isCollision) {
+          this.x < 0 ? this.x = canvasWidth : this.x;
+          this.x > canvasWidth ? this.x = 0 : this.x;
+          this.y < 0 ? this.y = canvasHeight : this.y;
+          this.y > canvasHeight ? this.y = 0 : this.y;
+        } else {
+          this.checkCollision();
+        }
       };
 
       //--- Рисование мяча
@@ -742,21 +761,21 @@
         switch (direction) {
           case 'up': {
             this.xSpeed = 0;
-            this.ySpeed = -5;
+            this.ySpeed = -1;
             break;
           }
           case 'down': {
             this.xSpeed = 0;
-            this.ySpeed = 5;
+            this.ySpeed = 1;
             break;
           }
           case 'left': {
-            this.xSpeed = -5;
+            this.xSpeed = -1;
             this.ySpeed = 0;
             break;
           }
           case 'right': {
-            this.xSpeed = 5;
+            this.xSpeed = 1;
             this.ySpeed = 0;
             break;
           }
@@ -765,10 +784,33 @@
             this.ySpeed = 0;
             break;
           }
-          default: {
-            this.xSpeed = 0;
-            this.ySpeed = 0;
+          case 'faster': {
+            this.speed++;
+            break;
           }
+          case 'slower': {
+            if (this.speed > 0) {
+              this.speed--;
+            }
+            break;
+          }
+          case 'larger': {
+            this.radius++;
+            break;
+          }
+          case 'smaller': {
+            if (this.radius > 0) {
+              this.radius--;
+            }
+            break;
+          }
+        }
+      };
+
+      //--- Выбор скорости
+      Ball.prototype.setSpeed = function (number) {
+        if (number !== undefined) {
+          this.speed = number;
         }
       };
 
@@ -787,16 +829,98 @@
 
       document.body.addEventListener('keydown', function (e) {
         e.preventDefault();
-        let direction = KEY_NAMES[e.keyCode];
+        let direction = KEY_ACTIONS[e.keyCode];
+        let speed = KEY_NUMBERS[e.keyCode];
+
+        ball.setSpeed(speed);
         ball.setDirection(direction);
       }, false)
 
       setInterval(function () {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         ball.draw();
-        ball.move();
+        ball.move(false);
         ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
       }, 30);
+    };
+
+    // Игра Змейка
+    let gameSnake = function () {
+      let cnvs = document.getElementById('gameSnakeCanvas');
+      let ctx = cnvs.getContext('2d');
+      let cnvsWidth = cnvs.width;
+      let cnvsHeight = cnvs.height;
+      let blockSize = 10;
+      let widthInBlocks = cnvsWidth / blockSize;
+      let heightInBlocks = cnvsHeight / blockSize;
+      let score = 0;
+
+      //--- Рисование рамки
+      let drawBorder = function () {
+        ctx.fillStyle = "Gray";
+        ctx.fillRect(0, 0, cnvsWidth, blockSize);
+        ctx.fillRect(0, cnvsHeight - blockSize, cnvsWidth, blockSize);
+        ctx.fillRect(0, 0, blockSize, cnvsHeight);
+        ctx.fillRect(cnvsWidth - blockSize, 0, blockSize, cnvsHeight);
+      };
+
+      //--- Счет
+      let drawScore = function () {
+        ctx.font = "20px Courier";
+        ctx.fillStyle = "Black";
+        ctx.textBaseline = "top";
+        ctx.alignText = "left";
+        ctx.fillText("Счет: " + score, blockSize, blockSize);
+      };
+
+      //--- Окончание игры
+      let gameOver = function (idInterval) {
+        clearInterval(idInterval);
+        ctx.font = "60px Courier";
+        ctx.fillStyle = "Black";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Конец игры", cnvsWidth / 2, cnvsHeight / 2);
+      };
+
+      //--- Рисование круга
+      let circle = function (x, y, radius, color, isFill) {
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+        isFill ? ctx.fillStyle = color : ctx.strokeStyle = color;
+        isFill ? ctx.fill() : ctx.stroke();
+      };
+
+      //--- Конструктор ячейки игрового поля
+      let Block = function (col, row) {
+        this.col = col;
+        this.row = row;
+      };
+
+      //--- Рисование квадрата в заданной ячейке
+      Block.prototype.drawSquare = function (color) {
+        let x = this.col * blockSize;
+        let y = this.row * blockSize;
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, blockSize, blockSize);
+      };
+
+      //--- Рисование круга в заданной ячейке
+      Block.prototype.drawCircle = function (color) {
+        let centerX = this.col * blockSize + blockSize / 2;
+        let centerY = this.row * blockSize + blockSize / 2;
+        circle(centerX, centerY, blockSize / 2, color, true);
+      };
+
+      //--- Сравнение позиций ячеек
+      Block.prototype.equal = function (otherBlock) {
+        return this.col === otherBlock.col && this.row === otherBlock.row;
+      };
+
+      //--- Конструктор змейки
+      let Snake = function () {
+
+      };
     };
 
     // Инициализация кода после загрузки контента
@@ -815,7 +939,8 @@
         'drawCircleClickBtn',
         'animationBeeBtn',
         'animationJumpBallBtn',
-        'controlAnimationBtn'
+        'controlAnimationBtn',
+        'gameSnakeBtn'
       ];
 
       const ARRAY_FUNCTIONS = [
@@ -832,7 +957,8 @@
         canvasDraw().drawCircleClick,
         animationCanvasDraw().animationBee,
         animationCanvasDraw().animationJumpBall,
-        controlAnimation
+        controlAnimation,
+        gameSnake
       ];
 
       if (ARRAY_BTNS.length !== ARRAY_FUNCTIONS.length) {
@@ -953,7 +1079,7 @@
           <div id="carRacingRoad"></div>
         </td>
       </tr>
-      <tr> 
+      <tr>
         <td>
           <button type="button" id="drawManBtn">Нарисовать человечков</button>
           <br><br>
@@ -967,7 +1093,7 @@
           <canvas width="500" height="500" id="canvasDrawContainer"></canvas>
         </td>
       </tr>
-      <tr> 
+      <tr>
         <td>
           <button type="button" id="animationBeeBtn">Анимация движения пчелы</button>
           <br><br>
@@ -977,12 +1103,20 @@
           <canvas width="500" height="500" id="animationCanvasDraw"></canvas>
         </td>
       </tr>
-      <tr> 
+      <tr>
         <td>
           <button type="button" id="controlAnimationBtn">Управление движением мяча</button>
         </td>
         <td colspan="3">
           <canvas width="500" height="300" id="controlAnimationCanvas"></canvas>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" id="gameSnakeBtn">Игра Змейка</button>
+        </td>
+        <td colspan="3">
+          <canvas width="500" height="500" id="gameSnakeCanvas"></canvas>
         </td>
       </tr>
     </table>
