@@ -354,7 +354,7 @@
       road.style.height = "500px";
 
       //--- Конструктор Car
-      let Car = function (x,y,speed) {
+      const Car = function (x,y,speed) {
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -726,7 +726,7 @@
       };
 
       //--- Конструктор мяча
-      let Ball = function () {
+      const Ball = function () {
         this.x = canvasWidth / 2;
         this.y = canvasHeight / 2;
         this.speed = 5;
@@ -854,6 +854,16 @@
       let widthInBlocks = cnvsWidth / blockSize;
       let heightInBlocks = cnvsHeight / blockSize;
       let score = 0;
+      let playing = true;
+      let animationTime = 500;
+
+      //--- Коды клавишь и направления
+      const DIRECTIONS = {
+        37: "left",
+        38: "up",
+        39: "right",
+        40: "down"
+      };
 
       //--- Рисование рамки
       let drawBorder = function () {
@@ -874,8 +884,8 @@
       };
 
       //--- Окончание игры
-      let gameOver = function (idInterval) {
-        clearInterval(idInterval);
+      let gameOver = function () {
+        playing = false;
         ctx.font = "60px Courier";
         ctx.fillStyle = "Black";
         ctx.textAlign = "center";
@@ -892,7 +902,7 @@
       };
 
       //--- Конструктор ячейки игрового поля
-      let Block = function (col, row) {
+      const Block = function (col, row) {
         this.col = col;
         this.row = row;
       };
@@ -918,9 +928,160 @@
       };
 
       //--- Конструктор змейки
-      let Snake = function () {
+      const Snake = function () {
+        this.segments = [
+          new Block(7, 5),
+          new Block(6, 5),
+          new Block(5, 5)
+        ];
 
+        this.direction = "right";
+        this.nextDirection = "right";
       };
+
+      //--- Рисование квадратика для каждого сегмента тела змейки
+      Snake.prototype.draw = function () {
+        this.segments[0].drawSquare("Green");
+        let isEvenSegment = false;
+
+        for (let i = 1; i < this.segments.length; i++) {
+          if (isEvenSegment) {
+            this.segments[i].drawSquare("Blue");
+          } else {
+            this.segments[i].drawSquare("Yellow");
+          }
+
+          isEvenSegment = !isEvenSegment;
+        }
+      };
+
+      //--- Проверка на столкновение змейки со стеной или собственным телом
+      Snake.prototype.checkCollision = function (head) {
+        let leftCollision = (head.col === 0);
+        let topCollision = (head.row === 0);
+        let rightCollision = (head.col === widthInBlocks - 1);
+        let bottomCollision = (head.row === heightInBlocks - 1);
+        let wallCollision = leftCollision || topCollision || rightCollision || bottomCollision;
+        let selfCollision = false;
+
+        for (let i = 0; i < this.segments.length; i++) {
+          if (head.equal(this.segments[i])) {
+            selfCollision = true;
+          }
+        }
+
+        return wallCollision || selfCollision;
+      };
+
+      //--- Создание новой головы и добавление её в начало змейки, чтобы передвинуть змейку в текущем направлении
+      Snake.prototype.move = function () {
+        let head = this.segments[0];
+        let newHead;
+
+        this.direction = this.nextDirection;
+
+        switch(this.direction) {
+          case "right":
+            newHead = new Block(head.col + 1, head.row);
+            break;
+
+          case "down":
+            newHead = new Block(head.col, head.row + 1);
+            break;
+
+          case "left":
+            newHead = new Block(head.col - 1, head.row);
+            break;
+
+          case "up":
+            newHead = new Block(head.col, head.row - 1);
+            break;
+        }
+
+        if (this.checkCollision(newHead)) {
+          gameOver();
+          return;
+        }
+
+        this.segments.unshift(newHead);
+
+        if (newHead.equal(apple.position)) {
+          score++;
+          animationTime -= 5;
+          apple.move(this.segments);
+        } else {
+          this.segments.pop();
+        }
+      };
+
+      //--- Задание следующего напраления движения змейки на основе нажатой клавиши
+      Snake.prototype.setDirection = function (newDirection) {
+        if (this.direction === "up" && newDirection === "down") {
+          return;
+        } else if (this.direction === "right" && newDirection === "left") {
+          return;
+        } else if (this.direction === "down" && newDirection === "up") {
+          return;
+        } else if (this.direction === "left" && newDirection === "right") {
+          return;
+        }
+
+        this.nextDirection = newDirection;
+      };
+
+      //--- Конструктор Apple
+      const Apple = function () {
+        this.position = new Block(10, 10);
+      };
+
+      //--- Рисование яблока
+      Apple.prototype.draw = function () {
+        this.position.drawCircle('LimeGreen');
+      };
+
+      //--- Перемещение яблока в случайную позицию
+      Apple.prototype.move = function (occupiedBlocks) {
+        let randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
+        let randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
+        this.position = new Block(randomCol, randomRow);
+
+        for (let i = 0; i < occupiedBlocks.length; i++) {
+          if (this.position.equal(occupiedBlocks[i])) {
+            this.move(occupiedBlocks);
+            return;
+          }
+        }
+      };
+
+      //--- Создание змейки и яблока
+      const snake = new Snake();
+      const apple = new Apple();
+
+      //--- Анимация змейки
+      let gameLoop = function () {
+        ctx.clearRect(0, 0, cnvsWidth, cnvsHeight);
+        drawScore();
+        snake.move();
+        snake.draw();
+        apple.draw();
+        drawBorder();
+
+        if (playing) {
+          setTimeout(gameLoop, animationTime);
+        }
+      };
+
+      gameLoop();
+
+      document.body.addEventListener('keydown', function (e) {
+        e.preventDefault();
+
+        let newDirection = DIRECTIONS[e.keyCode];
+
+        if (newDirection !== undefined) {
+          snake.setDirection(newDirection);
+        }
+      });
     };
 
     // Инициализация кода после загрузки контента
@@ -966,7 +1127,7 @@
         return;
       }
 
-      for (var k = 0; k < ARRAY_BTNS.length; k++) {
+      for (let k = 0; k < ARRAY_BTNS.length; k++) {
         addEventButton(ARRAY_BTNS[k], ARRAY_FUNCTIONS[k]);
       }
 
