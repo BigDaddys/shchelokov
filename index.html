@@ -20,12 +20,12 @@
   <script>
 
     // Добавить событие к кнопке
-    let addEventButton = function (id, func) {
+    const addEventButton = function (id, func) {
       document.getElementById(id).addEventListener('click', func, false);
     };
 
     // Шар Судьбы
-    let initBall = function () {
+    const initBall = function () {
       const PHRASES = [
         "Звучит неплохо",
         "Да, это определенно надо сделать",
@@ -34,7 +34,7 @@
         "Компьютер говорит нет"
       ];
 
-      let outputPhareseResult = document.getElementById('resultPhraseBall');
+      const outputPhareseResult = document.getElementById('resultPhraseBall');
       let question = prompt("Введите вопрос", "");
 
       if (question) {
@@ -45,15 +45,13 @@
     };
 
     // Генератор дразнилок
-    let generateInsult = function () {
+    const generateInsult = function () {
       const RANDOM_BODY_PARTS = ['глаз', 'нос', 'рот', 'череп'];
       const RANDOM_ADJECTIVES = ['вонючий', 'унылый', 'дурацкий'];
       const RANDOM_BODY_PARTS_ANIMALS = ['лапа', 'хвост', 'пасть', 'морда', 'крыло'];
       const RANDOM_ANIMALS = ['мухи', 'выдры', 'мартышки', 'крысы'];
-
-      let outputInsult = document.getElementById('resultInsult');
-
-      let getRandomWord = function (arrayName) {
+      const outputInsult = document.getElementById('resultInsult');
+      const getRandomWord = function (arrayName) {
         return arrayName[Math.floor(Math.random() * arrayName.length)];
       };
 
@@ -70,18 +68,20 @@
     };
 
     // Генератор пароля
-    let generatePassword = function () {
+    const generatePassword = function () {
       const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
       const DIGITALS = "0123456789";
       const SYMBOLS = "!@#$%^&*()_+-={}[]:;|?<>/\"'~";
 
       let lettersString = ALPHABET;
       let alphabetUpper = ALPHABET.toUpperCase();
+
       let genString = "";
       let len = prompt("Длина пароля", "7");
-      let outputPassword = document.getElementById('resultPassword');
 
-      let getCheckedStatus = function (id) {
+      const outputPassword = document.getElementById('resultPassword');
+
+      const getCheckedStatus = function (id) {
         let status = document.getElementById(id).checked;
         return status;
       };
@@ -106,10 +106,10 @@
     };
 
     // Хакерский язык
-    let hackLang = function () {
+    const hackLang = function () {
       let inputString = prompt("Введите текст", "");
       let outputString = "";
-      let outputHack = document.getElementById('resultHack');
+      const outputHack = document.getElementById('resultHack');
 
       if (inputString) {
         for (let i = 0; i < inputString.length; i++) {
@@ -133,7 +133,7 @@
     };
 
     // Игра Виселица
-    let gameViselica = function () {
+    const gameViselica = function () {
       const WORDS = [
         "ателье",
         "стрела",
@@ -149,17 +149,17 @@
         "дорога"
       ];
 
-      let cnvs = document.getElementById('viselicaCanvas');
-      let ctx = cnvs.getContext('2d');
+      const cnvs = document.getElementById('viselicaCanvas');
+      const ctx = cnvs.getContext('2d');
 
       //--- Выбор случайного слова
-      let pickWord = function (array) {
+      const pickWord = function (array) {
         return array[Math.floor(Math.random() * array.length)];
       };
 
       //--- Создание массива со скрытыми буквами
-      let setupAnswerArray = function (word) {
-        let createArray = [];
+      const setupAnswerArray = function (word) {
+        const createArray = [];
 
         for (let i = 0; i < word.length; i++) {
           createArray[i] = "_";
@@ -169,7 +169,7 @@
       };
 
       //--- Обновление результатов игры после ввода буквы игроком
-      let updateGameState = function (letter, word, array) {
+      const updateGameState = function (letter, word, array) {
         let countLetters = 0;
 
         for (let j = 0; j < word.length; j++) {
@@ -183,7 +183,7 @@
       };
 
       //--- Рисование человечка
-      let drawSegment = function (incorrectGuesses) {
+      const drawSegment = function (incorrectGuesses) {
         ctx.lineWidth = 2;
 
         if (incorrectGuesses === 0) {
@@ -252,10 +252,11 @@
     };
 
     // Сравнение массивов
-    let arraysСompare = function () {
+    const arraysСompare = function () {
       let arrayOne = prompt('Введите первую последовательность через запятую', '');
       let arrayTwo = prompt('Введите вторую последовательность через запятую', '');
-      let outputArraysСompareResult = document.getElementById('arraysСompareResult');
+
+      const outputArraysСompareResult = document.getElementById('arraysСompareResult');
 
       if (arrayOne === null || arrayTwo === null) {
         return;
@@ -280,10 +281,11 @@
     };
 
     // Игра Найди клад!
-    let findInMap = function () {
-      let outputfindInMapResult = document.getElementById('findInMapResult');
-      let widthImg = parseInt(document.getElementById('findInMapImg').getAttribute('width'), 10);
-      let heightImg = parseInt(document.getElementById('findInMapImg').getAttribute('height'), 10);
+    const findInMap = function () {
+      const outputfindInMapResult = document.getElementById('findInMapResult');
+      const widthImg = parseInt(document.getElementById('findInMapImg').getAttribute('width'), 10);
+      const heightImg = parseInt(document.getElementById('findInMapImg').getAttribute('height'), 10);
+
       let clicks = 20;
       let target = {
         x: getRandomNumber(widthImg),
@@ -345,8 +347,8 @@
     };
 
     // Игра "Гонка на автомобилях"
-    let carRacing = function () {
-      let road = document.getElementById('carRacingRoad');
+    const carRacing = function () {
+      const road = document.getElementById('carRacingRoad');
 
       road.style.position = "relative";
       road.style.overflow = "hidden";
@@ -415,7 +417,7 @@
       }, false);
 
       document.getElementById('carRacingBtnRun').addEventListener('click', function () {
-        let animationRacing = setInterval(function () {
+        const animationRacing = setInterval(function () {
           addedCar.moveRight(Math.ceil(Math.random() * 5));
           addedCar2.moveRight(Math.ceil(Math.random() * 5));
         }, 30);
@@ -423,12 +425,12 @@
     };
 
     // Рисование на Canvas
-    let canvasDraw = function () {
-      let cnvs = document.getElementById('canvasDrawContainer');
-      let ctx = cnvs.getContext('2d');
+    const canvasDraw = function () {
+      const cnvs = document.getElementById('canvasDrawContainer');
+      const ctx = cnvs.getContext('2d');
 
       //--- Рисование человечка
-      let drawMan = function () {
+      const drawMan = function () {
         ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
         ctx.fillRect(100,100,50,50);
@@ -461,8 +463,8 @@
       };
 
       //--- Рисование снеговика
-      let drawSnowman = function () {
-        let circle = function circle(x, y, radius, lineWidth, color, isFill) {
+      const drawSnowman = function () {
+        const circle = function circle(x, y, radius, lineWidth, color, isFill) {
           ctx.lineWidth = lineWidth;
           isFill ? ctx.fillStyle = color: ctx.strokeStyle = color;
           ctx.beginPath();
@@ -489,7 +491,7 @@
       };
 
       //--- Рисование по массиву точек
-      let drawPoints = function () {
+      const drawPoints = function () {
         let points = prompt('Введите последовательность точек в виде: X1,Y1:X2,Y2 и т. д.', '50,50:200,200:50,200:50,50');
 
         if (points.length === 0) {
@@ -518,7 +520,7 @@
       };
 
       //--- Рисование кругов при клике
-      let drawCircleClick = function () {
+      const drawCircleClick = function () {
         ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
         cnvs.addEventListener('click', function (e) {
@@ -538,9 +540,9 @@
     };
 
     // Анимация
-    let animationCanvasDraw = function () {
-      let canvas = document.getElementById('animationCanvasDraw');
-      let ctx = canvas.getContext('2d');
+    const animationCanvasDraw = function () {
+      const canvas = document.getElementById('animationCanvasDraw');
+      const ctx = canvas.getContext('2d');
 
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
@@ -549,16 +551,16 @@
       let coordY = 200;
 
       //--- Анимация движения пчелы
-      let animationBee = function () {
+      const animationBee = function () {
         // Рисование кругов
-        let circleDraw = function (x, y, radius, isFill) {
+        const circleDraw = function (x, y, radius, isFill) {
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2, false);
           isFill ? ctx.fill() : ctx.stroke();
         };
 
         // Рисование пчелы
-        let drawBee = function (x ,y) {
+        const drawBee = function (x ,y) {
           ctx.lineWidth = 2;
           ctx.strokeStyle = "Black";
           ctx.fillStyle = "Gold";
@@ -572,7 +574,7 @@
         };
 
         // Обновление позиции пчелы
-        let updatePosition = function (coord) {
+        const updatePosition = function (coord) {
           let offset = Math.random() * 6 - 3;
 
           coord += offset;
@@ -600,11 +602,11 @@
       };
 
       //--- Анимация прыгающего мяча
-      let animationJumpBall = function () {
+      const animationJumpBall = function () {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         //--- Рисование круга
-        let drawCircle = function (x, y, radius, color, isFill) {
+        const drawCircle = function (x, y, radius, color, isFill) {
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2, false);
           isFill ? ctx.fillStyle = color : ctx.strokeStyle = color;
@@ -612,12 +614,11 @@
         };
 
         //--- Выбор произвольного цвета
-        let pickRandomColor = function (listColors) {
+        const pickRandomColor = function (listColors) {
           return listColors[Math.floor(Math.random() * listColors.length)];
         };
 
-        let moreBalls = [];
-
+        const moreBalls = [];
         const ballColors = ["Red", "Green", "Blue", "Orange", "Yellow", "Purple"];
         const ballCount = 10;
 
@@ -673,10 +674,6 @@
 
           ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
         }, 10);
-
-        /*setTimeout(function () {
-          clearInterval(jumpBallInterval);
-        }, 10000);*/
       };
 
       return {
@@ -686,13 +683,11 @@
     };
 
     // Управление анимацией с клавиатуры
-    let controlAnimation = function () {
-      let canvas = document.getElementById('controlAnimationCanvas');
-      let ctx = canvas.getContext('2d');
-
+    const controlAnimation = function () {
+      const canvas = document.getElementById('controlAnimationCanvas');
+      const ctx = canvas.getContext('2d');
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
-
       const KEY_ACTIONS = {
         32: "space",
         37: "left",
@@ -704,7 +699,6 @@
         67: "smaller",
         86: "larger"
       };
-
       const KEY_NUMBERS = {
         49: 1,
         50: 2,
@@ -718,7 +712,7 @@
       };
 
       //--- Рисование круга
-      let drawCircle = function (x, y, radius, color, isFill) {
+      const drawCircle = function (x, y, radius, color, isFill) {
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2, false);
         isFill ? ctx.fillStyle = color : ctx.strokeStyle = color;
@@ -825,7 +819,7 @@
         }
       };
 
-      let ball = new Ball();
+      const ball = new Ball();
 
       document.body.addEventListener('keydown', function (e) {
         e.preventDefault();
@@ -845,14 +839,15 @@
     };
 
     // Игра Змейка
-    let gameSnake = function () {
-      let cnvs = document.getElementById('gameSnakeCanvas');
-      let ctx = cnvs.getContext('2d');
-      let cnvsWidth = cnvs.width;
-      let cnvsHeight = cnvs.height;
-      let blockSize = 10;
-      let widthInBlocks = cnvsWidth / blockSize;
-      let heightInBlocks = cnvsHeight / blockSize;
+    const gameSnake = function () {
+      const cnvs = document.getElementById('gameSnakeCanvas');
+      const ctx = cnvs.getContext('2d');
+      const cnvsWidth = cnvs.width;
+      const cnvsHeight = cnvs.height;
+      const blockSize = 10;
+      const widthInBlocks = cnvsWidth / blockSize;
+      const heightInBlocks = cnvsHeight / blockSize;
+
       let score = 0;
       let playing = true;
       let animationTime = 500;
@@ -866,7 +861,7 @@
       };
 
       //--- Рисование рамки
-      let drawBorder = function () {
+      const drawBorder = function () {
         ctx.fillStyle = "Gray";
         ctx.fillRect(0, 0, cnvsWidth, blockSize);
         ctx.fillRect(0, cnvsHeight - blockSize, cnvsWidth, blockSize);
@@ -875,7 +870,7 @@
       };
 
       //--- Счет
-      let drawScore = function () {
+      const drawScore = function () {
         ctx.font = "20px Courier";
         ctx.fillStyle = "Black";
         ctx.textBaseline = "top";
@@ -884,7 +879,7 @@
       };
 
       //--- Окончание игры
-      let gameOver = function () {
+      const gameOver = function () {
         playing = false;
         ctx.font = "60px Courier";
         ctx.fillStyle = "Black";
@@ -894,7 +889,7 @@
       };
 
       //--- Рисование круга
-      let circle = function (x, y, radius, color, isFill) {
+      const circle = function (x, y, radius, color, isFill) {
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2, false);
         isFill ? ctx.fillStyle = color : ctx.strokeStyle = color;
@@ -1058,7 +1053,7 @@
       const apple = new Apple();
 
       //--- Анимация змейки
-      let gameLoop = function () {
+      const gameLoop = function () {
         ctx.clearRect(0, 0, cnvsWidth, cnvsHeight);
         drawScore();
         snake.move();
